@@ -92,6 +92,13 @@ enum {
   l_rgw_topic_last
 };
 
+enum {
+  l_rgw_usage_first = 18000,
+  l_rgw_usage_used_bytes,
+  l_rgw_usage_num_objects,
+  l_rgw_usage_last
+};
+
 namespace rgw::op_counters {
 
 struct CountersContainer {

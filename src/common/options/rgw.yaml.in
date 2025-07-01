@@ -4006,6 +4006,20 @@ options:
   default: 3
   services:
   - rgw
+- name: rgw_usage_metrics_db_path
+  type: str
+  level: advanced
+  desc: Path to LMDB database storing usage metrics
+  default: /var/lib/ceph/radosgw/usage
+  services:
+  - rgw
+- name: rgw_usage_metrics_refresh_interval
+  type: uint
+  level: advanced
+  desc: Seconds between usage metrics refresh
+  default: 60
+  services:
+  - rgw
 - name: rgw_luarocks_location
   type: str
   level: advanced

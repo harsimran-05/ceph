@@ -263,6 +263,11 @@ int rgw::AppMain::init_storage()
 void rgw::AppMain::init_perfcounters()
 {
   (void) rgw_perf_start(dpp->get_cct());
+  usage_metrics = std::make_unique<UsageMetrics>(dpp->get_cct());
+  if (usage_metrics->start(env.driver) < 0) {
+    ldpp_dout(dpp, 1) << "failed to start usage metrics" << dendl;
+    usage_metrics.reset();
+  }
 } /* init_perfcounters */
 
 void rgw::AppMain::init_http_clients()
@@ -625,6 +630,10 @@ void rgw::AppMain::shutdown(std::function<void(void)> finalize_async_signals)
   rgw::curl::cleanup_curl();
   g_conf().remove_observer(implicit_tenant_context.get());
   implicit_tenant_context.reset(); // deletes
+  if (usage_metrics) {
+    usage_metrics->stop();
+    usage_metrics.reset();
+  }
   rgw_perf_stop(g_ceph_context);
   ratelimiter.reset(); // deletes--ensure this happens before we destruct
 } /* AppMain::shutdown */

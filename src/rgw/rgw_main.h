@@ -30,6 +30,7 @@
 #include "rgw_lua.h"
 #include "rgw_dmclock_scheduler_ctx.h"
 #include "rgw_ratelimit.h"
+#include "rgw_usage_metrics.h"
 
 
 class RGWPauser : public RGWRealmReloader::Pauser {
@@ -80,6 +81,7 @@ class AppMain {
   std::unique_ptr<RGWFrontendPauser> fe_pauser;
   std::unique_ptr<RGWRealmWatcher> realm_watcher;
   std::unique_ptr<RGWPauser> rgw_pauser;
+  std::unique_ptr<UsageMetrics> usage_metrics;
   std::unique_ptr<sal::ConfigStore> cfgstore;
   SiteConfig site;
   const DoutPrefixProvider* dpp;
