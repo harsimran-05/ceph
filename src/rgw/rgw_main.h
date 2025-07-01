@@ -18,6 +18,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include "rgw_exporter.h"
 
 #include "common/async/context_pool.h"
 
@@ -86,6 +87,7 @@ class AppMain {
   RGWProcessEnv env;
   void need_context_pool();
   std::optional<ceph::async::io_context_pool> context_pool;
+  std::unique_ptr<RGWExporter> exporter;
 public:
   AppMain(const DoutPrefixProvider* dpp);
   ~AppMain();
@@ -115,6 +117,7 @@ public:
   int init_frontends2(RGWLib* rgwlib = nullptr);
   void init_tracepoints();
   void init_lua();
+  void init_usage_exporter();
 
   bool have_http() {
     return have_http_frontend;

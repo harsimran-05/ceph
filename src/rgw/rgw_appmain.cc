@@ -562,7 +562,13 @@ void rgw::AppMain::init_lua()
   if (r < 0) {
     ldpp_dout(dpp, 5) << "WARNING: failed to install Lua packages from allowlist. error: " << r
             << dendl;
-  }
+}
+
+void rgw::AppMain::init_usage_exporter()
+{
+  exporter = std::make_unique<RGWExporter>();
+  exporter->start(dpp, env.driver);
+}
   for (const auto &p : failed_packages) {
     ldpp_dout(dpp, 5) << "WARNING: failed to install Lua package: " << p
             << " from allowlist" << dendl;
@@ -584,6 +590,10 @@ void rgw::AppMain::shutdown(std::function<void(void)> finalize_async_signals)
   if (env.driver->get_name() == "rados") {
     reloader.reset(); // stop the realm reloader
     static_cast<rgw::sal::RadosLuaManager*>(env.lua.manager.get())->unwatch_reload(dpp);
+  }
+
+  if (exporter) {
+    exporter->stop();
   }
 
   for (auto& fe : fes) {
